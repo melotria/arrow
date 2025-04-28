@@ -1492,3 +1492,55 @@ public inline fun <E, reified T : Throwable, A> Either<Throwable, A>.catch(@Buil
   contract { callsInPlace(catch, InvocationKind.AT_MOST_ONCE) }
   return recover { e -> if (e is T) catch(e) else throw e }
 }
+
+/**
+ * Returns the [Right] value or throws an exception created from the [Left] value.
+ *
+ * ```kotlin
+ * import arrow.core.Either
+ * import io.kotest.matchers.shouldBe
+ * import io.kotest.assertions.throwables.shouldThrow
+ *
+ * fun test() {
+ *   Either.Right(12).getOrElseThrow { RuntimeException("Error: $it") } shouldBe 12
+ *   shouldThrow<RuntimeException> {
+ *     Either.Left("error").getOrElseThrow { RuntimeException("Error: $it") }
+ *   }
+ * }
+ * ```
+ *
+ * @param onLeft Function that creates an exception from the [Left] value.
+ * @return The [Right] value or throws an exception created by [onLeft].
+ */
+public inline fun <A, B> Either<A, B>.getOrElseThrow(onLeft: (A) -> Throwable): B {
+  contract { callsInPlace(onLeft, InvocationKind.AT_MOST_ONCE) }
+  return when (this) {
+    is Either.Left -> throw onLeft(value)
+    is Either.Right -> value
+  }
+}
+
+/**
+ * Returns the [Right] value or throws an exception created from the [Left] value.
+ * Alias for [getOrElseThrow].
+ *
+ * ```kotlin
+ * import arrow.core.Either
+ * import io.kotest.matchers.shouldBe
+ * import io.kotest.assertions.throwables.shouldThrow
+ *
+ * fun test() {
+ *   Either.Right(12).throwOnLeft { RuntimeException("Error: $it") } shouldBe 12
+ *   shouldThrow<RuntimeException> {
+ *     Either.Left("error").throwOnLeft { RuntimeException("Error: $it") }
+ *   }
+ * }
+ * ```
+ *
+ * @param onLeft Function that creates an exception from the [Left] value.
+ * @return The [Right] value or throws an exception created by [onLeft].
+ */
+public inline fun <A, B> Either<A, B>.throwOnLeft(onLeft: (A) -> Throwable): B {
+  contract { callsInPlace(onLeft, InvocationKind.AT_MOST_ONCE) }
+  return getOrElseThrow(onLeft)
+}

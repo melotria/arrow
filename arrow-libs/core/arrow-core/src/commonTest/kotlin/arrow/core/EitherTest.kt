@@ -24,7 +24,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
 class EitherTest {
-  
+
   val ARB = Arb.either(Arb.string(), Arb.int())
 
   @Test
@@ -32,7 +32,7 @@ class EitherTest {
     testLaws(
       MonoidLaws("Either", 0.right(), { x, y -> x.combine(y, String::plus, Int::plus) }, ARB)
     )
-    
+
   @Test
   fun leftIsLeftIsRight() = runTest {
     checkAll(Arb.int()) { a: Int ->
@@ -295,6 +295,48 @@ class EitherTest {
       }
 
       res shouldBe expected
+    }
+  }
+
+  @Test
+  fun getOrElseThrowRight() = runTest {
+    checkAll(Arb.int()) { a: Int ->
+      val right: Either<String, Int> = Right(a)
+      right.getOrElseThrow { RuntimeException(it) } shouldBe a
+    }
+  }
+
+  @Test
+  fun getOrElseThrowLeft() = runTest {
+    checkAll(Arb.string()) { a: String ->
+      val left: Either<String, Int> = Left(a)
+      try {
+        left.getOrElseThrow { RuntimeException(it) }
+        fail("Expected exception but none was thrown")
+      } catch (e: RuntimeException) {
+        e.message shouldBe a
+      }
+    }
+  }
+
+  @Test
+  fun throwOnLeftRight() = runTest {
+    checkAll(Arb.int()) { a: Int ->
+      val right: Either<String, Int> = Right(a)
+      right.throwOnLeft { RuntimeException(it) } shouldBe a
+    }
+  }
+
+  @Test
+  fun throwOnLeftLeft() = runTest {
+    checkAll(Arb.string()) { a: String ->
+      val left: Either<String, Int> = Left(a)
+      try {
+        left.throwOnLeft { RuntimeException(it) }
+        fail("Expected exception but none was thrown")
+      } catch (e: RuntimeException) {
+        e.message shouldBe a
+      }
     }
   }
 }
