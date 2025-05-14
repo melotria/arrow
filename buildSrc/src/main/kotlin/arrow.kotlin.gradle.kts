@@ -19,8 +19,8 @@ repositories {
 group = property("projects.group").toString()
 val projectNameWithDots = project.name.replace('-', '.')
 
-val Project.withoutAndroid
-  get() = project.name == "suspendapp" || project.name == "suspendapp-ktor"
+//val Project.withoutAndroid
+//  get() = project.name == "suspendapp" || project.name == "suspendapp-ktor"
 
 val Project.requiresAndroidCoreLibraryDesugaring
   get() = project.name == "arrow-collectors"
@@ -33,7 +33,7 @@ val Project.isKotlinMultiplatform: Boolean
 
 if (!isKotlinJvm) {
   plugins.apply("org.jetbrains.kotlin.multiplatform")
-  if (!withoutAndroid) plugins.apply("com.android.library")
+//  if (!withoutAndroid) plugins.apply("com.android.library")
 }
 plugins.apply("com.diffplug.spotless")
 plugins.apply("ru.vyarus.animalsniffer")
@@ -98,78 +98,78 @@ if (isKotlinMultiplatform) {
       }
     }
 
-    js(IR) {
-      nodejs {
-        testTask {
-          useMocha {
-            timeout = "300s"
-          }
-        }
-      }
-      browser {
-        testTask {
-          useKarma {
-            useChromeHeadless()
-            timeout.set(Duration.ofMinutes(5))
-          }
-        }
-      }
-    }
+//    js(IR) {
+//      nodejs {
+//        testTask {
+//          useMocha {
+//            timeout = "300s"
+//          }
+//        }
+//      }
+//      browser {
+//        testTask {
+//          useKarma {
+//            useChromeHeadless()
+//            timeout.set(Duration.ofMinutes(5))
+//          }
+//        }
+//      }
+//    }
 
     @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
-    wasmJs {
-      browser()
-      nodejs()
-      d8 {
-        testTask {
-          timeout.set(Duration.ofMinutes(5))
-        }
-      }
-    }
+//    wasmJs {
+//      browser()
+//      nodejs()
+//      d8 {
+//        testTask {
+//          timeout.set(Duration.ofMinutes(5))
+//        }
+//      }
+//    }
 
-    if (!withoutAndroid) androidTarget()
+//    if (!withoutAndroid) androidTarget()
 
     // Native: https://kotlinlang.org/docs/native-target-support.html
     // -- Tier 1 --
-    linuxX64()
-    macosX64()
-    macosArm64()
-    iosSimulatorArm64()
-    iosX64()
-    // -- Tier 2 --
-    linuxArm64()
-    watchosSimulatorArm64()
-    watchosX64()
-    if (project.name != "arrow-cache4k") watchosArm32()
-    watchosArm64()
-    tvosSimulatorArm64()
-    tvosX64()
-    tvosArm64()
-    iosArm64()
-    // -- Tier 3 --
-    mingwX64()
+//    linuxX64()
+//    macosX64()
+//    macosArm64()
+//    iosSimulatorArm64()
+//    iosX64()
+//    // -- Tier 2 --
+//    linuxArm64()
+//    watchosSimulatorArm64()
+//    watchosX64()
+//    if (project.name != "arrow-cache4k") watchosArm32()
+//    watchosArm64()
+//    tvosSimulatorArm64()
+//    tvosX64()
+//    tvosArm64()
+//    iosArm64()
+//    // -- Tier 3 --
+//    mingwX64()
     // Android Native and watchOS not included
 
     applyDefaultHierarchyTemplate()
 
     sourceSets {
-      val nonJvmMain by creating { dependsOn(commonMain.get()) }
-      val nonJvmTest by creating { dependsOn(commonTest.get()) }
+//      val nonJvmMain by creating { dependsOn(commonMain.get()) }
+//      val nonJvmTest by creating { dependsOn(commonTest.get()) }
 
-      nativeMain.get().dependsOn(nonJvmMain)
-      nativeTest.get().dependsOn(nonJvmTest)
+//      nativeMain.get().dependsOn(nonJvmMain)
+//      nativeTest.get().dependsOn(nonJvmTest)
 
-      jsMain.get().dependsOn(nonJvmMain)
-      jsTest.get().dependsOn(nonJvmTest)
+//      jsMain.get().dependsOn(nonJvmMain)
+//      jsTest.get().dependsOn(nonJvmTest)
 
-      wasmJsMain.get().dependsOn(nonJvmMain)
-      wasmJsTest.get().dependsOn(nonJvmTest)
+//      wasmJsMain.get().dependsOn(nonJvmMain)
+//      wasmJsTest.get().dependsOn(nonJvmTest)
 
-      if (!withoutAndroid) {
-        val androidAndJvmMain by creating { dependsOn(commonMain.get()) }
-        jvmMain.get().dependsOn(androidAndJvmMain)
-        androidMain.get().dependsOn(androidAndJvmMain)
-      }
+//      if (!withoutAndroid) {
+//        val androidAndJvmMain by creating { dependsOn(commonMain.get()) }
+//        jvmMain.get().dependsOn(androidAndJvmMain)
+//        androidMain.get().dependsOn(androidAndJvmMain)
+//      }
 
       commonMain {
         dependencies {
@@ -203,19 +203,19 @@ if (isKotlinJvm) {
   }
 }
 
-if (pluginManager.hasPlugin("com.android.library")) {
-  configure<com.android.build.gradle.LibraryExtension> {
-    namespace = projectNameWithDots
-    compileSdk = 35
-    defaultConfig {
-      minSdk = 21
-    }
-    compileOptions {
-      sourceCompatibility = JavaVersion.VERSION_1_8
-      targetCompatibility = JavaVersion.VERSION_1_8
-    }
-  }
-}
+//if (pluginManager.hasPlugin("com.android.library")) {
+//  configure<com.android.build.gradle.LibraryExtension> {
+//    namespace = projectNameWithDots
+//    compileSdk = 35
+//    defaultConfig {
+//      minSdk = 21
+//    }
+//    compileOptions {
+//      sourceCompatibility = JavaVersion.VERSION_1_8
+//      targetCompatibility = JavaVersion.VERSION_1_8
+//    }
+//  }
+//}
 
 configure<com.diffplug.gradle.spotless.SpotlessExtension> {
   kotlin {
@@ -262,7 +262,7 @@ dependencies {
   signature("org.codehaus.mojo.signature:java18:1.0@signature")
   when {
     !isKotlinMultiplatform -> { }
-    withoutAndroid -> { }
+//    withoutAndroid -> { }
     requiresAndroidCoreLibraryDesugaring ->
       signature("com.toasttab.android:gummy-bears-api-21:0.12.0:coreLib2@signature")
     else ->

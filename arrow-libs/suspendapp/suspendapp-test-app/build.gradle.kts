@@ -15,19 +15,19 @@ spotless {
 
 kotlin {
   jvm()
-  macosX64().binaries.executable()
-  macosArm64().binaries.executable()
-  linuxArm64().binaries.executable()
-  linuxX64().binaries.executable()
-  js(IR) {
-    nodejs()
-    binaries.executable()
-  }
-  @OptIn(ExperimentalWasmDsl::class)
-  wasmJs {
-    nodejs()
-    binaries.executable()
-  }
+//  macosX64().binaries.executable()
+//  macosArm64().binaries.executable()
+//  linuxArm64().binaries.executable()
+//  linuxX64().binaries.executable()
+//  js(IR) {
+//    nodejs()
+//    binaries.executable()
+//  }
+//  @OptIn(ExperimentalWasmDsl::class)
+//  wasmJs {
+//    nodejs()
+//    binaries.executable()
+//  }
 
   applyDefaultHierarchyTemplate()
   sourceSets {

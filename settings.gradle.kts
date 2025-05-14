@@ -100,8 +100,8 @@ project(":arrow-optics").projectDir = file("arrow-libs/optics/arrow-optics")
 include("arrow-optics-reflect")
 project(":arrow-optics-reflect").projectDir = file("arrow-libs/optics/arrow-optics-reflect")
 
-include("arrow-optics-compose")
-project(":arrow-optics-compose").projectDir = file("arrow-libs/optics/arrow-optics-compose")
+//include("arrow-optics-compose")
+//project(":arrow-optics-compose").projectDir = file("arrow-libs/optics/arrow-optics-compose")
 
 include("arrow-optics-ksp-plugin")
 project(":arrow-optics-ksp-plugin").projectDir = file("arrow-libs/optics/arrow-optics-ksp-plugin")
