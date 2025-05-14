@@ -1345,6 +1345,34 @@ public inline infix fun <A, B> Either<A, B>.getOrElse(default: (A) -> B): B {
 }
 
 /**
+ * Returns the right value [B] of this [Either],
+ * or throws an exception produced by applying the [throwable] function to the [Left] value.
+ *
+ * ```kotlin
+ * import arrow.core.Either
+ * import arrow.core.getOrElseThrow
+ * import io.kotest.assertions.throwables.shouldThrow
+ * import io.kotest.matchers.shouldBe
+ *
+ * fun test() {
+ *   Either.Right(12).getOrElseThrow { RuntimeException("Error: $it") } shouldBe 12
+ *   shouldThrow<RuntimeException> {
+ *     Either.Left("error").getOrElseThrow { RuntimeException("Error: $it") }
+ *   }.message shouldBe "Error: error"
+ * }
+ * ```
+ * <!--- KNIT example-either-37.kt -->
+ * <!--- TEST lines.isEmpty() -->
+ */
+public inline fun <A, B> Either<A, B>.getOrElseThrow(throwable: (A) -> Throwable): B {
+  contract { callsInPlace(throwable, InvocationKind.AT_MOST_ONCE) }
+  return when (this) {
+    is Left -> throw throwable(this.value)
+    is Right -> this.value
+  }
+}
+
+/**
  * Returns the value from this [Right] or [Left].
  *
  * Example:

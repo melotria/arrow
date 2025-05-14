@@ -24,7 +24,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
 class EitherTest {
-  
+
   val ARB = Arb.either(Arb.string(), Arb.int())
 
   @Test
@@ -32,7 +32,7 @@ class EitherTest {
     testLaws(
       MonoidLaws("Either", 0.right(), { x, y -> x.combine(y, String::plus, Int::plus) }, ARB)
     )
-    
+
   @Test
   fun leftIsLeftIsRight() = runTest {
     checkAll(Arb.int()) { a: Int ->
@@ -134,6 +134,21 @@ class EitherTest {
   fun getOrNullOk() = runTest {
     checkAll(Arb.int()) { a: Int ->
       Right(a).getOrNull() shouldBe a
+    }
+  }
+
+  @Test
+  fun getOrElseThrowOk() = runTest {
+    checkAll(Arb.int()) { a: Int ->
+      Right(a).getOrElseThrow { RuntimeException("Error: $it") } shouldBe a
+
+      val left: Either<Int, Int> = Left(a)
+      try {
+        left.getOrElseThrow { RuntimeException("Error: $it") }
+        fail("Should have thrown an exception")
+      } catch (e: RuntimeException) {
+        e.message shouldBe "Error: $a"
+      }
     }
   }
 
