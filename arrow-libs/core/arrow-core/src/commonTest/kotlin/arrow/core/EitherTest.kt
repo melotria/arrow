@@ -129,6 +129,21 @@ class EitherTest {
       Left(a).getOrElse { b } shouldBe b
     }
   }
+  
+  @Test
+  fun getOrElseThrowOk() = runTest {
+    checkAll(Arb.int()) { a: Int ->
+      Right(a).getOrElseThrow { RuntimeException("Error: $it") } shouldBe a
+      
+      val left: Either<String, Int> = Left("error")
+      try {
+        left.getOrElseThrow { RuntimeException("Error: $it") }
+        fail("Should have thrown an exception")
+      } catch (e: RuntimeException) {
+        e.message shouldBe "Error: error"
+      }
+    }
+  }
 
   @Test
   fun getOrNullOk() = runTest {
