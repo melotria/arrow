@@ -1368,6 +1368,32 @@ public fun <A> A.left(): Either<A, Nothing> = Left(this)
 
 public fun <A> A.right(): Either<Nothing, A> = Right(this)
 
+/**
+ * Returns the [Right] value or throws an exception created by applying the [onLeft] function to the [Left] value.
+ *
+ * ```kotlin
+ * import arrow.core.Either
+ * import io.kotest.assertions.throwables.shouldThrow
+ * import io.kotest.matchers.shouldBe
+ *
+ * fun test() {
+ *   Either.Right(12).getOrElseThrow { RuntimeException("Error: $it") } shouldBe 12
+ *   shouldThrow<RuntimeException> {
+ *     Either.Left("error").getOrElseThrow { RuntimeException("Error: $it") }
+ *   }.message shouldBe "Error: error"
+ * }
+ * ```
+ * <!--- KNIT example-either-37.kt -->
+ * <!--- TEST lines.isEmpty() -->
+ */
+public inline fun <A, B> Either<A, B>.getOrElseThrow(onLeft: (A) -> Throwable): B {
+  contract { callsInPlace(onLeft, InvocationKind.AT_MOST_ONCE) }
+  return when (this) {
+    is Left -> throw onLeft(this.value)
+    is Right -> this.value
+  }
+}
+
 public operator fun <A : Comparable<A>, B : Comparable<B>> Either<A, B>.compareTo(other: Either<A, B>): Int =
   fold(
     { a1 -> other.fold({ a2 -> a1.compareTo(a2) }, { -1 }) },

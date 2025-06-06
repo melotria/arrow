@@ -131,6 +131,22 @@ class EitherTest {
   }
 
   @Test
+  fun getOrElseThrowOk() = runTest {
+    checkAll(Arb.int(), Arb.string()) { a: Int, b: String ->
+      Right(a).getOrElseThrow { RuntimeException(it.toString()) } shouldBe a
+      
+      val exception = try {
+        Left(b).getOrElseThrow { RuntimeException(it) }
+        null // Should not reach here
+      } catch (e: RuntimeException) {
+        e
+      }
+      
+      exception?.message shouldBe b
+    }
+  }
+
+  @Test
   fun getOrNullOk() = runTest {
     checkAll(Arb.int()) { a: Int ->
       Right(a).getOrNull() shouldBe a
