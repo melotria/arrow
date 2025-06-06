@@ -7,7 +7,7 @@ private val namedThreadCount = AtomicInt(0)
 
 class NamedThreadFactory(val name: String): ThreadFactory {
   override fun newThread(r: Runnable): Thread? =
-    Thread(r, "$name-${namedThreadCount.getAndIncrement()}").apply {
+    Thread(r, "$name-${/* DOES NOT WORK: namedThreadCount.getAndIncrement()*/ null}").apply {
       uncaughtExceptionHandler = Thread.UncaughtExceptionHandler { _, e ->
         e.printStackTrace()
       }
