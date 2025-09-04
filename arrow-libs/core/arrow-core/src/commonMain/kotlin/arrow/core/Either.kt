@@ -754,6 +754,34 @@ public sealed class Either<out A, out B> {
   }
 
   /**
+   * Returns the [Right] value if this is a [Right], otherwise throws the exception returned by [onLeft].
+   *
+   * ```kotlin
+   * import arrow.core.Either
+   * import io.kotest.assertions.throwables.shouldThrow
+   * import io.kotest.matchers.shouldBe
+   *
+   * fun test() {
+   *   Either.Right(12).getOrElseThrow { RuntimeException("Boom!") } shouldBe 12
+   *   shouldThrow<RuntimeException> {
+   *     Either.Left("error").getOrElseThrow { RuntimeException(it) }
+   *   }.message shouldBe "error"
+   * }
+   * ```
+   * <!--- KNIT example-either-getOrElseThrow.kt -->
+   * <!--- TEST lines.isEmpty() -->
+   */
+  public inline fun <X : Throwable> getOrElseThrow(onLeft: (A) -> X): B {
+    contract {
+      callsInPlace(onLeft, InvocationKind.AT_MOST_ONCE)
+    }
+    return when (this) {
+      is Right -> this.value
+      is Left -> throw onLeft(this.value)
+    }
+  }
+
+  /**
    * Transforms [Either] into [Option],
    * where the encapsulated value [B] is wrapped in [Some] when this instance represents [Either.Right],
    * or [None] if it is [Either.Left].
